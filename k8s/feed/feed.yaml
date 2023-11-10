@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: feed-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: feed-service
+  template:
+    metadata:
+      labels:
+        app: feed-service
+    spec:
+      containers:
+        - name: feed-service
+          image: moukthikavuyyuru/feed-service:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8086
+          env:
+            - name: SERVER_PORT
+              value: "8086"
+            - name: SPRING_DATA_CASSANDRA_CONTACT_POINTS
+              value: "my-cassandra.default.svc.cluster.local"
+            - name: SPRING_DATA_CASSANDRA_PORT
+              value: "9042"
+            - name: SPRING_DATA_CASSANDRA_KEYSPACE_NAME
+              value: "mykeyspace"
+            - name: SPRING_DATA_CASSANDRA_USERNAME
+              value: "cassandra"
+            - name: SPRING_DATA_CASSANDRA_PASSWORD
+              value: "ngPzmADuts"
+
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: feed-service
+spec:
+  selector:
+    app: feed-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8086
+  type: ClusterIP
