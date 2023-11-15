@@ -18,21 +18,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8086
-          env:
-            - name: SERVER_PORT
-              value: "8086"
-            - name: SPRING_DATA_CASSANDRA_CONTACT_POINTS
-              value: "my-cassandra.default.svc.cluster.local"
-            - name: SPRING_DATA_CASSANDRA_PORT
-              value: "9042"
-            - name: SPRING_DATA_CASSANDRA_KEYSPACE_NAME
-              value: "mykeyspace"
-            - name: SPRING_DATA_CASSANDRA_USERNAME
-              value: "cassandra"
-            - name: SPRING_DATA_CASSANDRA_PASSWORD
-              value: "ngPzmADuts"
-
-
 ---
 
 apiVersion: v1

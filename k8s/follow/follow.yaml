@@ -17,11 +17,6 @@ spec:
           image: moukthikavuyyuru/follow-service:latest
           ports:
             - containerPort: 8050
-          env:
-            - name: SPRING_DATA_MONGODB_URI
-              value: "mongodb://myUser:myPassword@mongodb.default.svc.cluster.local:27017/Users"
-            - name: SPRING_KAFKA_BOOTSTRAP_SERVERS
-              value: "kafka-service:9092"
 
 ---
 apiVersion: v1

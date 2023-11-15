@@ -17,9 +17,6 @@ spec:
           image: moukthikavuyyuru/post-service:latest
           ports:
             - containerPort: 8090
-          env:
-            - name: SPRING_DATA_MONGODB_URI
-              value: "mongodb://myUser:myPassword@mongodb.default.svc.cluster.local:27017/PostsDB"
 
 ---
 apiVersion: v1

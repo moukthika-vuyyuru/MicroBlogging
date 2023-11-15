@@ -17,25 +17,7 @@ spec:
           image: moukthikavuyyuru/kafka-consumer-service:latest
           ports:
             - containerPort: 8084
-          env:
-            - name: kafka.bootstrap-servers
-              value: kafka-service:9092
-            - name: SERVER_PORT
-              value: "8084"
-            - name: SPRING_DATA_CASSANDRA_CONTACT_POINTS
-              value: "my-cassandra.default.svc.cluster.local"
-            - name: SPRING_DATA_CASSANDRA_PORT
-              value: "9042"
-            - name: SPRING_DATA_CASSANDRA_KEYSPACE_NAME
-              value: "mykeyspace"
-            - name: SPRING_DATA_CASSANDRA_USERNAME
-              value: "cassandra"
-            - name: SPRING_DATA_CASSANDRA_PASSWORD
-              value: ""
-            - name: SPRING_REDIS_HOST
-              value: "redis-service"
-            - name: SPRING_REDIS_PORT
-              value: "6379"
+
 ---
 
 apiVersion: v1
