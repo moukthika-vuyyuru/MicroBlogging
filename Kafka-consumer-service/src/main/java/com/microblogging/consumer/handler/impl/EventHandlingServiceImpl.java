@@ -2,20 +2,17 @@ package com.microblogging.consumer.handler.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.microblogging.consumer.handler.EventHandlingService;
-import com.microblogging.consumer.model.FollowEvent;
-import com.microblogging.consumer.model.TweetMessage;
-import com.microblogging.consumer.model.UserTimeline;
-import com.microblogging.consumer.model.UserTimelineKey;
+import com.microblogging.consumer.model.*;
 import com.microblogging.consumer.repo.FollowerRepository;
 import com.microblogging.consumer.repo.UserTimelineRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -116,6 +113,13 @@ public class EventHandlingServiceImpl implements EventHandlingService {
         log.info("Handling user_followed event: " + followEvent.toString());
         try {
             followerRepository.addFollower(followEvent.getUserId(), followEvent.getFollowerId());
+            // Fetch past posts of the followed user
+            String followedUserId = followEvent.getUserId();
+            List<Post> pastPosts = fetchPastPosts(followedUserId);
+
+            // Update the follower's timeline with these posts
+            pastPosts.forEach(post -> updateFollowerTimeline(followEvent.getFollowerId(), post));
+
         } catch (Exception e) {
             log.error("An error occurred while adding a follower", e);
         }
@@ -151,6 +155,40 @@ public class EventHandlingServiceImpl implements EventHandlingService {
 
     private Set<String> getFollowerIds(String userId) {
         return followerRepository.getFollowers(userId);
+    }
+
+    private List<Post> fetchPastPosts(String userId) {
+        RestTemplate restTemplate = new RestTemplate();
+        String url = "http://post-service/api/post/getUserPosts/" + userId;
+
+        try {
+            ResponseEntity<Post[]> response = restTemplate.getForEntity(url, Post[].class);
+            return Arrays.asList(response.getBody());
+        } catch (Exception e) {
+            log.error("Error fetching past posts for userId: " + userId, e);
+            return Collections.emptyList(); // Or handle the exception as per your requirement
+        }
+    }
+
+    private void updateFollowerTimeline(String followerId, Post post) {
+        try {
+            UserTimelineKey key = new UserTimelineKey(
+                    followerId,
+                    post.getLastModifiedDate(),
+                    post.getPostId()
+            );
+
+            UserTimeline userTimeline = new UserTimeline(
+                    key,
+                    post.getAuthorId(),
+                    post.getContent()
+            );
+
+            userTimelineRepository.save(userTimeline);
+        } catch (Exception e) {
+            log.error("An error occurred while updating the follower timeline", e);
+            // Handle the exception as per your requirement
+        }
     }
 }
 

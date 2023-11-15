@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: post-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: post-service
+  template:
+    metadata:
+      labels:
+        app: post-service
+    spec:
+      containers:
+        - name: post-service
+          image: moukthikavuyyuru/post-service:latest
+          ports:
+            - containerPort: 8090
+          env:
+            - name: SPRING_DATA_MONGODB_URI
+              value: "mongodb://myUser:myPassword@mongodb.default.svc.cluster.local:27017/PostsDB"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: post-service
+spec:
+  selector:
+    app: post-service
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8090
+  type: ClusterIP

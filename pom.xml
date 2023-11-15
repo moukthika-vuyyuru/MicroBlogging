@@ -21,7 +21,9 @@
 	<modules>
 		<module>feed-service</module>
 		<module>Kafka-consumer-service</module>
-	</modules>
+        <module>post-service</module>
+        <module>follow-service</module>
+    </modules>
 
 	<build>
 		<plugins>
