@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("/user_feed")
 @Slf4j
 @Tag(name = "User Feed", description = "APIs for managing user feeds")

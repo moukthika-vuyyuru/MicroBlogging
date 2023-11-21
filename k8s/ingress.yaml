@@ -1,0 +1,41 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: microblogging-ingress
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - "146.235.233.3"
+      secretName: my-tls-secret
+  rules:
+    - http:
+        paths:
+          - path: /api/post
+            pathType: Prefix
+            backend:
+              service:
+                name: post-service
+                port:
+                  number: 80
+          - path: /user_feed
+            pathType: Prefix
+            backend:
+              service:
+                name: feed-service
+                port:
+                  number: 80
+          - path: /api/users
+            pathType: Prefix
+            backend:
+              service:
+                name: follow-service
+                port:
+                  number: 80
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: react-app-service
+                port:
+                  number: 80

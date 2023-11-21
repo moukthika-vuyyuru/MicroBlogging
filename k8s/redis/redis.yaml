@@ -28,3 +28,15 @@ spec:
         - name: redis-storage
           persistentVolumeClaim:
             claimName: redis-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+spec:
+  selector:
+    app: redis
+  ports:
+    - port: 6379
+      targetPort: 6379
