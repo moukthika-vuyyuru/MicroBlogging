@@ -2,6 +2,7 @@ package com.microblogging.post.Service;
 
 import com.microblogging.post.dao.IPostDao;
 import com.microblogging.post.model.Post;
+import org.apache.kafka.common.errors.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -112,5 +113,23 @@ public class PostService {
 		Query query = Query.query(combinedCriteria);
 		return mongoTemplate.find(query, Post.class);
 
+	}
+
+	public void LikePost(String postId, String userId) {
+		Post post = getPostByPostId(postId)
+				.orElseThrow(() -> new ResourceNotFoundException("Post not found with postId: " + postId));
+
+	    post.getLikes().add(userId);
+
+		repository.save(post);
+	}
+
+	public void unLikePost(String postId, String userId) {
+		Post post = getPostByPostId(postId)
+				.orElseThrow(() -> new ResourceNotFoundException("Post not found with postId: " + postId));
+
+		post.getLikes().remove(userId);
+
+		repository.save(post);
 	}
 }

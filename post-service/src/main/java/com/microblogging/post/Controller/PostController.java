@@ -85,4 +85,14 @@ public class PostController {
 		return postService.searchPosts(fromDate, toDate, userId, content);
 	}
 
+	@PostMapping("/posts/{postId}/like")
+	public ResponseEntity<Void> likePost(@PathVariable String postId, @RequestParam String userId) {
+		postService.LikePost(postId, userId);
+        return ResponseEntity.ok().build();
+    }
+	@PostMapping("/posts/{postId}/unlike")
+	public ResponseEntity<Void> unLikePost(@PathVariable String postId, @RequestParam String userId) {
+		postService.unLikePost(postId, userId);
+     return ResponseEntity.ok().build();
+	}
 }
