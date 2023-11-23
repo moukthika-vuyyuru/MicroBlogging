@@ -1,0 +1,41 @@
+version: "1.0"
+
+# Environment variables can be defined here
+
+# The phases section defines the actual build process
+phases:
+  # Pre-build phase for setting up the environment
+  preBuild:
+    commands:
+      - echo "Starting pre-build steps..."
+      - export PATH=$PATH:$MAVEN_HOME/bin
+      - mvn -v
+
+  # Build phase where the actual build of the project happens
+  build:
+    commands:
+      - echo "Starting build..."
+      # Build the feed service
+      - cd feed-service
+      - mvn clean package
+      - cd ..
+
+      # Build the follow service
+      - cd follow-service
+      - mvn clean package
+      - cd ..
+
+      # Repeat the above steps for other microservices like post-service, consumer-service, etc.
+
+  # Post-build phase for any cleanup or post-build tasks
+  postBuild:
+    commands:
+      - echo "Build completed."
+
+# Artifacts section describes which files to store from the build process
+artifacts:
+  files:
+    # Specify the paths to the packaged JAR/WAR files or any other artifacts you want to save
+    - feed-service/target/*.jar
+    - follow-service/target/*.jar
+    # Add paths for other services' artifacts
