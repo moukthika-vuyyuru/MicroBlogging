@@ -5,8 +5,11 @@ import com.microblogging.post.Service.PostService;
 import com.microblogging.post.model.Post;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,4 +64,25 @@ public class PostController {
 		}
 		log.info("Post deleted with id: " + postId);
 	}
+	@GetMapping("/getAllPosts")
+	public ResponseEntity<List<Post>> getAllPostsByUserId()
+	{
+
+		log.info("Received request to get all posts");
+		List<Post> posts = postService.getAllPosts();
+		if(posts.isEmpty()) {
+			log.info("No Posts found ");
+			return ResponseEntity.noContent().build();
+		}
+		return ResponseEntity.ok(posts);
+	}
+	@GetMapping("/searchPosts")
+	public List<Post> searchPosts(
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime fromDate,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime toDate,
+			@RequestParam(required = false) String userId,
+			@RequestParam(required = false) String content) {
+		return postService.searchPosts(fromDate, toDate, userId, content);
+	}
+
 }

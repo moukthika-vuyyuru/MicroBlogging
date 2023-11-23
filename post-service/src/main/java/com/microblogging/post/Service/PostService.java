@@ -3,17 +3,26 @@ package com.microblogging.post.Service;
 import com.microblogging.post.dao.IPostDao;
 import com.microblogging.post.model.Post;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 public class PostService {
 
 	@Autowired
     private IPostDao repository;
-	
+
+	@Autowired
+	private MongoTemplate mongoTemplate;
+
 	public Post addPost(Post post)
 	{
 		return repository.save(post);
@@ -74,5 +83,34 @@ public class PostService {
 		else
 			System.out.println("Did not find the post to be deleted");
 		return false;
+	}
+	public List<Post> getAllPosts() {
+		List<Post> posts = repository.findAll();
+		return posts;
+	}
+	public List<Post> searchPosts(LocalDateTime fromDate, LocalDateTime toDate, String userId, String content) {
+		List<Criteria> criteriaList = new ArrayList<>();
+
+		if (fromDate != null) {
+			criteriaList.add(Criteria.where("createdDate").gte(fromDate));
+		}
+		if (toDate != null) {
+			criteriaList.add(Criteria.where("createdDate").lte(toDate));
+		}
+		if (userId != null && !userId.isEmpty()) {
+			criteriaList.add(Criteria.where("userId").is(userId));
+		}
+		if (content != null && !content.isEmpty()) {
+			criteriaList.add(Criteria.where("content").regex("^" + Pattern.quote(content), "i"));
+		}
+
+		if (criteriaList.isEmpty()) {
+			return mongoTemplate.findAll(Post.class);
+		}
+
+		Criteria combinedCriteria = new Criteria().andOperator(criteriaList.toArray(new Criteria[0]));
+		Query query = Query.query(combinedCriteria);
+		return mongoTemplate.find(query, Post.class);
+
 	}
 }
