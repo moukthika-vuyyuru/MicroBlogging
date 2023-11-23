@@ -12,6 +12,14 @@ import java.util.Optional;
 public interface UserRepository extends MongoRepository<User, String> {
     Optional<User> findByUserId(String userId);
 
-    @Query("{ 'username': { $regex: ?0, $options: 'i' } }")
+    @Query("{" +
+            "    $or: [" +
+            "        { 'username': { $regex: ?0, $options: 'i' } }," +
+            "        { 'email': { $regex: ?0, $options: 'i' } }," +
+            "        { 'firstName': { $regex: ?0, $options: 'i' } }," +
+            "        { 'lastName': { $regex: ?0, $options: 'i' } }," +
+            "        { 'location': { $regex: ?0, $options: 'i' } }," +
+            "    ]" +
+            "}")
     List<User> searchByUsername(String username);
 }

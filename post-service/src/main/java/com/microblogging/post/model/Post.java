@@ -1,6 +1,8 @@
 package com.microblogging.post.model;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -60,4 +62,14 @@ public class Post {
 	public void setAuthorId(String authorId) {
 		this.authorId = authorId;
 	}
+
+	public Set<String> getLikes() {
+		return Likes;
+	}
+
+	public void setLikes(Set<String> likes) {
+		Likes = likes;
+	}
+
+	private Set<String> Likes = new HashSet<>();
 }
