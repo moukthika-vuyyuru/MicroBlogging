@@ -1,41 +1,39 @@
 version: "1.0"
 
-# Environment variables can be defined here
-
-# The phases section defines the actual build process
 phases:
-  # Pre-build phase for setting up the environment
-  preBuild:
+  pre_build:
     commands:
-      - echo "Starting pre-build steps..."
-      - export PATH=$PATH:$MAVEN_HOME/bin
-      - mvn -v
+      - echo "Starting build process"
+      - mvn clean install -DskipTests # Add -DskipTests if you don't want to run tests
+      - echo "Retrieving Docker credentials"
+      - export DOCKER_USERNAME=$(oci secrets secret-bundle get --secret-id ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqasus5o4phjlqn5rkyqq6y4cpzjidegdgxtn4smuo5367q --query 'data.secret-bundle-content.content' --raw-output | base64 --decode)
+      - export DOCKER_PASSWORD=$(oci secrets secret-bundle get --secret-id ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqajad3arhed7pf3xdha6ku6fxbti5ydpyh6qmw5dbe5pla --query 'data.secret-bundle-content.content' --raw-output | base64 --decode)
+      - echo "Logging into Docker Hub"
+      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-  # Build phase where the actual build of the project happens
   build:
     commands:
-      - echo "Starting build..."
-      # Build the feed service
+      # Build and push Kafka-consumer-service
+      - echo "Building Kafka Consumer Service Docker Image"
+      - cd Kafka-consumer-service
+      - docker build -t moukthikavuyyuru/kafka-consumer-service:latest .
+      - docker push moukthikavuyyuru/kafka-consumer-service:latest
+      - cd ..
+
+      # Build and push Feed Service
+      - echo "Building Feed Service Docker Image"
       - cd feed-service
-      - mvn clean package
+      - docker build -t moukthikavuyyuru/feed-service:latest .
+      - docker push moukthikavuyyuru/feed-service:latest
       - cd ..
 
-      # Build the follow service
-      - cd follow-service
-      - mvn clean package
+      # Build and push Post Service
+      - echo "Building Post Service Docker Image"
+      - cd post-service
+      - docker build -t moukthikavuyyuru/post-service:latest .
+      - docker push moukthikavuyyuru/post-service:latest
       - cd ..
 
-      # Repeat the above steps for other microservices like post-service, consumer-service, etc.
-
-  # Post-build phase for any cleanup or post-build tasks
-  postBuild:
+  post_build:
     commands:
-      - echo "Build completed."
-
-# Artifacts section describes which files to store from the build process
-artifacts:
-  files:
-    # Specify the paths to the packaged JAR/WAR files or any other artifacts you want to save
-    - feed-service/target/*.jar
-    - follow-service/target/*.jar
-    # Add paths for other services' artifacts
+      - echo "Build and push completed"
