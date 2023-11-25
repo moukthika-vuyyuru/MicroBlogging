@@ -5,12 +5,41 @@ shell: "bash"
 
 steps:
   - type: "Command"
-    name: "Install Java and Maven"
+    name: "Check and Install Java 11"
     command: |
-      yum install -y java-11-openjdk-devel
-      yum install -y maven
+      echo "Checking current Java version..."
+      CURRENT_JAVA_VERSION=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | cut -d'.' -f1-2)
+      echo "Current Java version is $CURRENT_JAVA_VERSION"
+
+      if [ "$CURRENT_JAVA_VERSION" != "11" ]; then
+        echo "Installing Java 11..."
+        yum install -y java-11-openjdk-devel
+      else
+        echo "Java 11 is already installed."
+      fi
 
   - type: "Command"
-    name: "Build app"
+    name: "Check and Install Maven"
     command: |
+      echo "Checking Maven installation..."
+      if ! type "mvn" > /dev/null; then
+        echo "Maven is not installed. Installing Maven..."
+        yum install -y maven
+      else
+        echo "Maven is already installed."
+      fi
+
+  - type: "Command"
+    name: "Build Application"
+    command: |
+      echo "Starting build process..."
       mvn clean install
+      echo "Build process complete."
+
+  - type: "Command"
+    name: "Check Docker Installation"
+    command: |
+      echo "Checking Docker version..."
+      docker --version
+
+# Include other necessary steps or configurations as needed
