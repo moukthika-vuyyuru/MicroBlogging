@@ -49,13 +49,8 @@ spec:
                 }
                 container('docker') {
                     dir('microblogging-service/Kafka-consumer-service') {
-                        script {
-                            withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
-                                sh "docker login -u $DOCKER_REGISTRY -p $PASSWORD"
-                                sh "docker build -t ${DOCKER_REGISTRY}/kafka-consumer-service:latest ."
-                                sh "docker push ${DOCKER_REGISTRY}/kafka-consumer-service:latest"
-                            }
-                        }
+                        echo 'Building and Testing...'
+                        sh 'docker build -t moukthikavuyyuru/kafka-consumer-service:latest .'
                     }
                 }
             }
