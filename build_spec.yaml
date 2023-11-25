@@ -5,6 +5,9 @@ shell: bash
 
 steps:
   - type: Command
+    name: "Check Maven Version"
+    command: "mvn -version"
+  - type: Command
     name: "Build app"
     command: |
-      mvn clean install
+      mvn clean
