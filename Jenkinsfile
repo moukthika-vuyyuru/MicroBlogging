@@ -1,5 +1,7 @@
 pipeline {
-    agent any
+    agent {
+        label 'k8s'
+    }
 
     tools{
         maven 'maven'
