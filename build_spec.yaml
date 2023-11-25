@@ -1,39 +1,11 @@
-version: "1.0"
-
-phases:
-  pre_build:
-    commands:
-      - echo "Starting build process"
-      - mvn clean install -DskipTests # Add -DskipTests if you don't want to run tests
-      - echo "Retrieving Docker credentials"
-      - export DOCKER_USERNAME=$(oci secrets secret-bundle get --secret-id ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqasus5o4phjlqn5rkyqq6y4cpzjidegdgxtn4smuo5367q --query 'data.secret-bundle-content.content' --raw-output | base64 --decode)
-      - export DOCKER_PASSWORD=$(oci secrets secret-bundle get --secret-id ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqajad3arhed7pf3xdha6ku6fxbti5ydpyh6qmw5dbe5pla --query 'data.secret-bundle-content.content' --raw-output | base64 --decode)
-      - echo "Logging into Docker Hub"
-      - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
-  build:
-    commands:
-      # Build and push Kafka-consumer-service
-      - echo "Building Kafka Consumer Service Docker Image"
-      - cd Kafka-consumer-service
-      - docker build -t moukthikavuyyuru/kafka-consumer-service:latest .
-      - docker push moukthikavuyyuru/kafka-consumer-service:latest
-      - cd ..
-
-      # Build and push Feed Service
-      - echo "Building Feed Service Docker Image"
-      - cd feed-service
-      - docker build -t moukthikavuyyuru/feed-service:latest .
-      - docker push moukthikavuyyuru/feed-service:latest
-      - cd ..
-
-      # Build and push Post Service
-      - echo "Building Post Service Docker Image"
-      - cd post-service
-      - docker build -t moukthikavuyyuru/post-service:latest .
-      - docker push moukthikavuyyuru/post-service:latest
-      - cd ..
-
-  post_build:
-    commands:
-      - echo "Build and push completed"
+name: Maven Build
+type: job
+stages:
+  - Build
+steps:
+  - name: Maven Build
+    type: plugin
+    plugin: oci/pipeline-plugin-devops-commons:2.0.3
+    stage_output: build
+    script:
+      - mvn clean install
