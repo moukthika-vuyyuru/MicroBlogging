@@ -1,32 +1,32 @@
 pipeline {
     agent any
 
+    tools{
+        maven 'maven'
+        git 'git'
+        jdk 'jdk'
+    }
+
     stages {
-        stage('Build') {
+        stage('Build & Test') {
             steps {
-                echo 'Building..'
+                echo 'Building and Testing...'
+                echo "The Jenkins job name is: ${env.JOB_NAME}"
                 sh 'mvn clean install'
+                sh 'mvn clean package'
             }
         }
-        stage('Test') {
+
+        stage('Packing the App') {
             steps {
-                echo 'Testing..'
-                sh 'mvn test'
+                sh 'mvn clean package'
             }
         }
+
         stage('Deploy') {
             steps {
-                echo 'Deploying..'
-                // Add your deployment script here
+                echo 'Deploying....'
             }
-        }
-    }
-    post {
-        success {
-            echo 'Build and Test Stages Successful!'
-        }
-        failure {
-            echo 'Build or Test Failed.'
         }
     }
 }
