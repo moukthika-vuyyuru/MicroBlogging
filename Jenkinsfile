@@ -17,8 +17,7 @@ pipeline {
                 echo 'Building and Testing...'
                 echo "The Jenkins job name is: ${env.JOB_NAME}"
                 sh 'mvn clean install'
-                sh 'mvn clean package'
-                dir('MicroBlogging/Kafka-consumer-service') {
+                dir('microblogging-service/Kafka-consumer-service') {
                     script {
                         withCredentials([usernamePassword(credentialsId: DOCKER_CREDENTIALS_ID, usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                             sh "docker login -u $DOCKER_REGISTRY -p $PASSWORD"
