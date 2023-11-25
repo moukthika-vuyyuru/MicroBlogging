@@ -1,13 +1,10 @@
-version: 1.0
-build-stages:
-  - build:
-      stage:
-        name: Build Stage
-        id: build
-      steps:
-        - name: Maven Build
-          type: plugin
-          plugin: oci/pipeline-plugin-devops-commons:2.0.3
-          stage_output: build
-          script:
-            - mvn clean install
+version: 0.1
+component: build
+timeoutInSeconds: 1000
+shell: bash
+
+steps:
+  - type: Command
+    name: "Build app"
+    command: |
+      mvn clean install
