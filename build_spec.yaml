@@ -14,6 +14,7 @@ steps:
       if [ "$CURRENT_JAVA_VERSION" != "11" ]; then
         echo "Installing Java 11..."
         yum install -y java-11-openjdk-devel
+        export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
       else
         echo "Java 11 is already installed."
       fi
@@ -32,8 +33,8 @@ steps:
   - type: "Command"
     name: "Build Application"
     command: |
-      echo "Starting build process..."
-      mvn clean install
+      echo "Starting build process with Maven..."
+      mvn clean install -X
       echo "Build process complete."
 
   - type: "Command"
