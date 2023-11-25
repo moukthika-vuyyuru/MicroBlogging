@@ -4,10 +4,26 @@ timeoutInSeconds: 1000
 shell: bash
 
 steps:
+  # Step 1: Check the current Java version
   - type: Command
-    name: "Check Maven Version"
-    command: "mvn -version"
+    name: "Check Current Java Version"
+    command: "java -version"
+
+  # Step 2: Install Java 11 (if required)
   - type: Command
-    name: "Build app"
+    name: "Install Java 11"
     command: |
-      mvn install -DskipTests=true
+      sudo apt-get update
+      sudo apt-get install -y openjdk-11-jdk
+      sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+
+  # Step 3: Recheck Java Version after installation
+  - type: Command
+    name: "Recheck Java Version"
+    command: "java -version"
+
+  # Step 4: Build the Application
+  - type: Command
+    name: "Build Application"
+    command: |
+      mvn clean install -DskipTests
