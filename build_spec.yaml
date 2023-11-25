@@ -13,9 +13,9 @@ steps:
   - type: Command
     name: "Install Java 11"
     command: |
-      sudo apt-get update
-      sudo apt-get install -y openjdk-11-jdk
-      sudo update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+      apt-get update
+      apt-get install -y openjdk-11-jdk
+      update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
 
   # Step 3: Recheck Java Version after installation
   - type: Command
