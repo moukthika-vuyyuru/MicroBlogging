@@ -32,7 +32,7 @@ steps:
     name: "Build Application"
     command: |
       echo "Starting build process with Maven..."
-      mvn clean install
+      mvn clean install -X
       echo "Build process complete."
 
   - type: "Command"
