@@ -1,7 +1,33 @@
 pipeline {
     agent {
-        label 'k8s'
-    }
+            kubernetes {
+                label 'k8s'
+                defaultContainer 'jnlp'
+                yaml """
+apiVersion: v1
+kind: Pod
+metadata:
+labels:
+    app: my-build-app
+spec:
+    containers:
+     - name: maven
+       image: maven:3.6.3-jdk-11
+       command:
+        - cat
+       tty: true
+     - name: docker
+       image: docker
+       volumeMounts:
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+    volumes:
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+                """
+            }
+      }
 
     tools{
         maven 'maven'
