@@ -1,3 +1,8 @@
+version: "0.1"
+component: "build"
+timeoutInSeconds: "1000"
+shell: "bash"
+
 steps:
   - type: "Command"
     name: "Check and Install Java 11"
@@ -32,7 +37,7 @@ steps:
     name: "Build Application"
     command: |
       echo "Starting build process with Maven..."
-      mvn clean install -X
+      mvn clean install
       echo "Build process complete."
 
   - type: "Command"
