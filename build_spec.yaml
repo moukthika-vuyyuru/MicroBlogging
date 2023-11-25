@@ -1,29 +1,16 @@
-version: 0.1
-component: build
-timeoutInSeconds: 1000
-shell: bash
+version: "0.1"
+component: "build"
+timeoutInSeconds: "1000"
+shell: "bash"
 
 steps:
-  # Step 1: Check the current Java version
-  - type: Command
-    name: "Check Current Java Version"
-    command: "java -version"
-
-  # Step 2: Install Java 11 (if required)
-  - type: Command
-    name: "Install Java 11"
+  - type: "Command"
+    name: "Install Java and Maven"
     command: |
-      apt-get update
-      apt-get install -y openjdk-11-jdk
-      update-alternatives --set java /usr/lib/jvm/java-11-openjdk-amd64/bin/java
+      yum install -y java-11-openjdk-devel
+      yum install -y maven
 
-  # Step 3: Recheck Java Version after installation
-  - type: Command
-    name: "Recheck Java Version"
-    command: "java -version"
-
-  # Step 4: Build the Application
-  - type: Command
-    name: "Build Application"
+  - type: "Command"
+    name: "Build app"
     command: |
-      mvn clean install -DskipTests
+      mvn clean install
