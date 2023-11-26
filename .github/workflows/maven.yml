@@ -32,6 +32,10 @@ jobs:
       - name: Build and push Docker images
         run: |
           for service in feed-service Kafka-consumer-service follow-service post-service; do
-            docker build -t moukthikavuyyuru/$service:latest ./$service
-            docker push moukthikavuyyuru/$service:latest
+            # Convert service name to lowercase for Docker tag
+            service_lower=$(echo $service | tr '[:upper:]' '[:lower:]')
+          
+            # Build and push the Docker image
+            docker build -t moukthikavuyyuru/$service_lower:latest ./$service
+            docker push moukthikavuyyuru/$service_lower:latest
           done
