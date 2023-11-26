@@ -5,6 +5,8 @@ shell: bash
 env:
   vaultVariables:
     OCI_REGISTRY_TOKEN: ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqasqm2uu6dds4zl2aac6su7qr2kxuodtaklttidkzs4c7q
+    DOCKERHUB_USERNAME: ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqa2suhlrletprxa5ngp32eescov3uii452wb2hngsiogca
+    DOCKERHUB_TOKEN: ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqavhu4eqic4njf6ze6yqut5qqjvvjuad6wcwkwatuwbcyq
   exportedVariables:
     - BUILDRUN_HASH
 
@@ -60,11 +62,14 @@ steps:
     name: Build Docker Images
     command: |
       cd ${OCI_PRIMARY_SOURCE_DIR}
+      echo "Logging into Docker Hub..."
+      echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USERNAME --password-stdin || exit 1
       for service in feed-service Kafka-consumer-service follow-service post-service; do
         # Convert service name to lowercase for Docker tag
         service_lower=$(echo $service | tr '[:upper:]' '[:lower:]')
         echo "Building Docker image for $service..."
-        docker build --pull --rm -t $service_lower ./$service
+        docker build --pull --rm -t moukthikavuyyuru/$service_lower:latest ./$service
+        docker push moukthikavuyyuru/$service_lower:latest || exit 1
       done
 
 outputArtifacts:
