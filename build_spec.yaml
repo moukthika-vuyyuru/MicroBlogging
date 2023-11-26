@@ -71,8 +71,7 @@ steps:
   - type: Command
     name: Update Kubernetes Manifests
     command: |
-      sed -i "s/\$BUILDRUN_HASH/$BUILDRUN_HASH/g" ${OCI_PRIMARY_SOURCE_DIR}/k8s/*.yaml
-
+      find ${OCI_PRIMARY_SOURCE_DIR}/k8s -type f -name '*.yaml' -exec sed -i "s/\$BUILDRUN_HASH/$BUILDRUN_HASH/g" {} +
 
 outputArtifacts:
 #  - name: feed-service
