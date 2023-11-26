@@ -59,9 +59,11 @@ steps:
     name: Build Docker Images
     command: |
       cd ${OCI_PRIMARY_SOURCE_DIR}
-      for service in feed follow post consumer; do
+      for service in feed-service Kafka-consumer-service follow-service post-service; do
+        # Convert service name to lowercase for Docker tag
+        service_lower=$(echo $service | tr '[:upper:]' '[:lower:]')
         echo "Building Docker image for $service..."
-        docker build --pull --rm -t $service ./$service
+        docker build --pull --rm -t $service_lower ./$service
       done
 
 outputArtifacts:
