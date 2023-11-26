@@ -5,6 +5,8 @@ shell: bash
 env:
   vaultVariables:
     OCI_REGISTRY_TOKEN: ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqasqm2uu6dds4zl2aac6su7qr2kxuodtaklttidkzs4c7q
+  exportedVariables:
+    - BUILDRUN_HASH
 
 steps:
   - type: Command
@@ -46,33 +48,35 @@ steps:
       mvn -version
       mvn clean install -DskipTests || exit 1
       echo "Build process complete."
+  - type: Command
+    name: Define unique image tag
+    timeoutInseconds: 40
+    command: |
+        export BUILDRUN_HASH=`echo S{OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
+        echo "BUILDRUN_HASH: " $BUILDRUN_HASH
 
   - type: Command
-    name: Build and Push Docker Images
+    name: Build Docker Images
     command: |
-      echo "Logging into OCI Container Registry..."
-      echo $OCI_REGISTRY_TOKEN | docker login us-sanjose-1.ocir.io --username SJSU/moukthikareddy.vuyyuru@sjsu.edu --password-stdin || exit 1
-      UNIQUE_TAG=$(echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7)
+      cd ${OCI_PRIMARY_SOURCE_DIR}
       for service in feed follow post consumer; do
         echo "Building Docker image for $service..."
-        docker build -t us-sanjose-1.ocir.io/moukthikareddy/docker-images/$service:$UNIQUE_TAG ./$service || exit 1
-        echo "Pushing Docker image for $service to OCI Container Registry..."
-        docker push us-sanjose-1.ocir.io/moukthikareddy/docker-images/$service:$UNIQUE_TAG || exit 1
+        docker build --pull --rm -t $service ./$service
       done
 
 outputArtifacts:
-  - name: feed-service-image
+  - name: feed-service
     type: DOCKER_IMAGE
-    location: us-sanjose-1.ocir.io/moukthikareddy/docker-images/feed:$UNIQUE_TAG
-  - name: follow-service-image
+    location: feed-service:latest
+  - name: follow-service
     type: DOCKER_IMAGE
-    location: us-sanjose-1.ocir.io/moukthikareddy/docker-images/follow:$UNIQUE_TAG
+    location: follow-service:latest
   - name: post-service-image
     type: DOCKER_IMAGE
-    location: us-sanjose-1.ocir.io/moukthikareddy/docker-images/post:$UNIQUE_TAG
+    location: post-service:latest
   - name: kafka-consumer-service-image
     type: DOCKER_IMAGE
-    location: us-sanjose-1.ocir.io/moukthikareddy/docker-images/consumer:$UNIQUE_TAG
+    location: kafka-consumer-service:latest
   - name: feed-service-manifest
     type: BINARY
     location: ${OCI_PRIMARY_SOURCE_DIR}/k8s/feed/feed.yaml
