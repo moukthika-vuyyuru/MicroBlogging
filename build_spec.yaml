@@ -78,9 +78,9 @@ steps:
       cd ${OCI_PRIMARY_SOURCE_DIR}
       docker build --pull --rm -t feed_service ./feed-service || exit 1
 outputArtifacts:
-  - name: oke_app_base
+  - name: feed-service
     type: DOCKER_IMAGE
-    location: oke_app_base:latest
-  - name: oke_deploy_manifest
+    location: feed_service:latest
+  - name: feed_deploy_manifest
     type: BINARY
     location: ${OCI_PRIMARY_SOURCE_DIR}/feed.yaml
