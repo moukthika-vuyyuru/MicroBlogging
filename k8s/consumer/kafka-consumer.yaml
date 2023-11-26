@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: kafka-consumer-service
-          image: moukthikavuyyuru/kafka-consumer-service:latest
+          image: moukthikavuyyuru/kafka-consumer-service:test
           ports:
             - containerPort: 8084
 

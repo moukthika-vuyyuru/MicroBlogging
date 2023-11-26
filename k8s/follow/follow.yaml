@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: follow-service
-          image: moukthikavuyyuru/follow-service:latest
+          image: moukthikavuyyuru/follow-service:test
           ports:
             - containerPort: 8050
 

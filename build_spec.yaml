@@ -65,7 +65,7 @@ steps:
       
         # Build and push the Docker image
         echo "Building Docker image for $service..."
-        docker build -t moukthikavuyyuru/$service_lower:latest ./$service || exit 1
+        docker build -t moukthikavuyyuru/$service_lower:test ./$service || exit 1
         echo "Pushing Docker image for $service to Docker Hub..."
-        docker push moukthikavuyyuru/$service_lower:latest || exit 1
+        docker push moukthikavuyyuru/$service_lower:test || exit 1
       done

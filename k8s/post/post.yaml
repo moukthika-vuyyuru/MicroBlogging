@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: post-service
-          image: moukthikavuyyuru/post-service:latest
+          image: moukthikavuyyuru/post-service:test
           ports:
             - containerPort: 8090
 

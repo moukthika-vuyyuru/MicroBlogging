@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: feed-service
-          image: moukthikavuyyuru/feed-service:latest
+          image: moukthikavuyyuru/feed-service:test
           imagePullPolicy: Always
           ports:
             - containerPort: 8086
