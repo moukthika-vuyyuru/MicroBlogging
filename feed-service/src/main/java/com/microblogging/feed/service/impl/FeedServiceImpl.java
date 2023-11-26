@@ -24,7 +24,7 @@ public class FeedServiceImpl implements FeedService {
     @Override
     public List<UserTimeline> getUserTimeline(String userId, int limit, LocalDateTime olderThan) {
         if (olderThan == null) {
-            log.info("Retrieving feed for user {} with limit {}", userId, limit);
+            log.info("Retrieving feed for user {} with limit  {}", userId, limit);
             return userTimelineRepository.findByUserIdWithLimit(userId, limit);
         } else {
             log.info("Retrieving feed for user {} older than {}", userId, olderThan);
