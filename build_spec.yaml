@@ -68,6 +68,12 @@ steps:
         echo "Building Docker image for $service..."
         docker build --pull --rm -t $service_lower:$BUILDRUN_HASH ./$service
       done
+  - type: Command
+    name: Update Kubernetes Manifests
+    command: |
+      export BUILDRUN_HASH=$(echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7)
+      sed -i "s/\$BUILDRUN_HASH/$BUILDRUN_HASH/g" ${OCI_PRIMARY_SOURCE_DIR}/k8s/*.yaml
+
 
 outputArtifacts:
   - name: feed-service
