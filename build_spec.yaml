@@ -83,4 +83,4 @@ outputArtifacts:
     location: feed_service:latest
   - name: feed
     type: BINARY
-    location: ${OCI_PRIMARY_SOURCE_DIR}
+    location: ${OCI_PRIMARY_SOURCE_DIR}/k8s/feed/feed.yaml
