@@ -10,16 +10,15 @@ steps:
       echo "Checking current Java version..."
       CURRENT_JAVA_VERSION=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | cut -d'.' -f1-2)
       echo "Current Java version is $CURRENT_JAVA_VERSION"
-
       if [ "$CURRENT_JAVA_VERSION" != "11" ]; then
         echo "Installing Java 11..."
-        yum install -y java-11-openjdk-devel
+        yum install -y java-11-openjdk-devel || exit 1
         export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
         export PATH=$JAVA_HOME/bin:$PATH
       else
         echo "Java 11 is already installed."
       fi
-      java -version
+      java -version || exit 1
 
   - type: "Command"
     name: "Check and Install Maven"
@@ -27,37 +26,38 @@ steps:
       echo "Checking Maven installation..."
       if ! type "mvn" > /dev/null; then
         echo "Maven is not installed. Installing Maven..."
-        yum install -y maven
+        yum install -y maven || exit 1
       else
         echo "Maven is already installed."
       fi
-      mvn -version
+      mvn -version || exit 1
 
   - type: "Command"
     name: "Build Application"
     command: |
       echo "Starting build process with Maven..."
-      mvn -B clean install
+      mvn -B clean install || exit 1
       echo "Build process complete."
 
   - type: "Command"
     name: "Check Docker Installation"
     command: |
       echo "Checking Docker version..."
-      docker --version
+      docker --version || exit 1
 
   - type: "Command"
     name: "Build and Push Docker Images to Docker Hub"
     command: |
       echo "Logging into Docker Hub..."
-      echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USERNAME --password-stdin
+      echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USERNAME --password-stdin || exit 1
       
       for service in feed-service Kafka-consumer-service follow-service post-service; do
         # Convert service name to lowercase for Docker tag
         service_lower=$(echo $service | tr '[:upper:]' '[:lower:]')
       
         # Build and push the Docker image
-        docker build -t moukthikavuyyuru/$service_lower:latest ./$service
-        docker push moukthikavuyyuru/$service_lower:latest
+        echo "Building Docker image for $service..."
+        docker build -t moukthikavuyyuru/$service_lower:latest ./$service || exit 1
+        echo "Pushing Docker image for $service to Docker Hub..."
+        docker push moukthikavuyyuru/$service_lower:latest || exit 1
       done
-      
