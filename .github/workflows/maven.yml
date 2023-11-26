@@ -44,3 +44,4 @@ jobs:
           file: ./${{ matrix.service }}/Dockerfile
           push: true
           tags: your-dockerhub-username/${{ matrix.service }}:latest
+          
