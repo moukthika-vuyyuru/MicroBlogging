@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: feed-service
-          image: us-sanjose-1.ocir.io/ax0zk0xsm3t8/feed-service:$TIMESTAMP
+          image: moukthikavuyyuru/feed-service:$BUILDRUN_HASH
           imagePullPolicy: Always
           ports:
             - containerPort: 8086

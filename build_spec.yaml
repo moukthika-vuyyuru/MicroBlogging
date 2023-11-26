@@ -8,15 +8,8 @@ env:
     DOCKERHUB_USERNAME: ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqa2suhlrletprxa5ngp32eescov3uii452wb2hngsiogca
     DOCKERHUB_TOKEN: ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqavhu4eqic4njf6ze6yqut5qqjvvjuad6wcwkwatuwbcyq
   exportedVariables:
-    - TIMESTAMP
+    - BUILDRUN_HASH
 steps:
-  - type: Command
-    name: Generate Timestamp
-    command: |
-      export TIMESTAMP=$(date +%Y%m%d%H%M%S)
-      echo "TIMESTAMP=$TIMESTAMP" >> $OCI_BUILD_EXPORT_ENV_VARS_FILE
-      echo "TIMESTAMP: $TIMESTAMP"
-
   - type: Command
     name: Check and Install Java 11
     command: >
@@ -62,37 +55,38 @@ steps:
     command: |
       export BUILDRUN_HASH=$(echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7)
       echo "BUILDRUN_HASH: $BUILDRUN_HASH"
-
-
   - type: Command
     name: Build Docker Images
     command: |
       cd ${OCI_PRIMARY_SOURCE_DIR}
+      echo "Logging into Docker Hub..."
+      echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USERNAME --password-stdin || exit 1
       for service in feed-service Kafka-consumer-service follow-service post-service; do
         # Convert service name to lowercase for Docker tag
         service_lower=$(echo $service | tr '[:upper:]' '[:lower:]')
         echo "Building Docker image for $service..."
-        docker build --pull --rm -t $service_lower:$TIMESTAMP ./$service
+        docker build --pull --rm -t moukthikavuyyuru/$service_lower:$BUILDRUN_HASH ./$service
+        docker push moukthikavuyyuru/$service_lower:$BUILDRUN_HASH || exit 1
       done
   - type: Command
     name: Update Kubernetes Manifests
     command: |
-      sed -i "s/\$TIMESTAMP/$TIMESTAMP/g" ${OCI_PRIMARY_SOURCE_DIR}/k8s/*.yaml
+      sed -i "s/\$BUILDRUN_HASH/$BUILDRUN_HASH/g" ${OCI_PRIMARY_SOURCE_DIR}/k8s/*.yaml
 
 
 outputArtifacts:
-  - name: feed-service
-    type: DOCKER_IMAGE
-    location: feed-service:$TIMESTAMP
-  - name: follow-service
-    type: DOCKER_IMAGE
-    location: follow-service:$TIMESTAMP
-  - name: post-service-image
-    type: DOCKER_IMAGE
-    location: post-service:$TIMESTAMP
-  - name: kafka-consumer-service-image
-    type: DOCKER_IMAGE
-    location: kafka-consumer-service:$TIMESTAMP
+#  - name: feed-service
+#    type: DOCKER_IMAGE
+#    location: feed-service:${TIMESTAMP}
+#  - name: follow-service
+#    type: DOCKER_IMAGE
+#    location: follow-service:${TIMESTAMP}
+#  - name: post-service-image
+#    type: DOCKER_IMAGE
+#    location: post-service:${TIMESTAMP}
+#  - name: kafka-consumer-service-image
+#    type: DOCKER_IMAGE
+#    location: kafka-consumer-service:${TIMESTAMP}
   - name: feed-service-manifest
     type: BINARY
     location: ${OCI_PRIMARY_SOURCE_DIR}/k8s/feed/feed.yaml

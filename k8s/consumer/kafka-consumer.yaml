@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: kafka-consumer-service
-          image: us-sanjose-1.ocir.io/ax0zk0xsm3t8/kafka-consumer-service:$TIMESTAMP
+          image: moukthikavuyyuru/kafka-consumer-service:$BUILDRUN_HASH
           ports:
             - containerPort: 8084
 

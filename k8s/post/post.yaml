@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: post-service
-          image: us-sanjose-1.ocir.io/ax0zk0xsm3t8/post-service:$TIMESTAMP
+          image: moukthikavuyyuru/post-service:$BUILDRUN_HASH
           ports:
             - containerPort: 8090
 
