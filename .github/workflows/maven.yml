@@ -32,6 +32,6 @@ jobs:
       - name: Build and push Docker images
         run: |
           for service in feed-service Kafka-consumer-service follow-service post-service; do
-            docker build -t your-dockerhub-username/$service:latest ./$service
-            docker push your-dockerhub-username/$service:latest
+            docker build -t moukthikavuyyuru/$service:latest ./$service
+            docker push moukthikavuyyuru/$service:latest
           done
