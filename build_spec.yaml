@@ -73,18 +73,18 @@ steps:
       done
 
 outputArtifacts:
-  - name: feed-service
-    type: DOCKER_IMAGE
-    location: feed-service:latest
-  - name: follow-service
-    type: DOCKER_IMAGE
-    location: follow-service:latest
-  - name: post-service-image
-    type: DOCKER_IMAGE
-    location: post-service:latest
-  - name: kafka-consumer-service-image
-    type: DOCKER_IMAGE
-    location: kafka-consumer-service:latest
+#  - name: feed-service
+#    type: DOCKER_IMAGE
+#    location: feed-service:latest
+#  - name: follow-service
+#    type: DOCKER_IMAGE
+#    location: follow-service:latest
+#  - name: post-service-image
+#    type: DOCKER_IMAGE
+#    location: post-service:latest
+#  - name: kafka-consumer-service-image
+#    type: DOCKER_IMAGE
+#    location: kafka-consumer-service:latest
   - name: feed-service-manifest
     type: BINARY
     location: ${OCI_PRIMARY_SOURCE_DIR}/k8s/feed/feed.yaml
