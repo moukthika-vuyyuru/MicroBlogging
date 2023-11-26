@@ -8,13 +8,13 @@ env:
     DOCKERHUB_USERNAME: ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqa2suhlrletprxa5ngp32eescov3uii452wb2hngsiogca
     DOCKERHUB_TOKEN: ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqavhu4eqic4njf6ze6yqut5qqjvvjuad6wcwkwatuwbcyq
   exportedVariables:
-    - BUILDRUN_HASH
-
+    - TIMESTAMP
 steps:
   - type: Command
     name: Generate Timestamp
     command: |
       export TIMESTAMP=$(date +%Y%m%d%H%M%S)
+      echo "TIMESTAMP=$TIMESTAMP" >> $OCI_BUILD_EXPORT_ENV_VARS_FILE
       echo "TIMESTAMP: $TIMESTAMP"
 
   - type: Command
