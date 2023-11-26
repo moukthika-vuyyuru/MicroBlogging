@@ -37,8 +37,6 @@ steps:
     name: "Build Application"
     command: |
       echo "Starting build process with Maven..."
-      export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
-      export PATH=$JAVA_HOME/bin:$PATH
       mvn clean install
       echo "Build process complete."
 
@@ -47,3 +45,18 @@ steps:
     command: |
       echo "Checking Docker version..."
       docker --version
+
+  - type: "Command"
+    name: "Build and Push Docker Images to Docker Hub"
+    command: |
+      echo "Logging into Docker Hub..."
+      echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USERNAME --password-stdin
+      
+      for service in feed-service Kafka-consumer-service follow-service post-service; do
+        # Convert service name to lowercase for Docker tag
+        service_lower=$(echo $service | tr '[:upper:]' '[:lower:]')
+      
+        # Build and push the Docker image
+        docker build -t moukthikavuyyuru/$service_lower:latest ./$service
+        docker push moukthikavuyyuru/$service_lower:latest
+      done
