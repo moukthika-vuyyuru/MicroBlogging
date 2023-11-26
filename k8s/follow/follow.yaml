@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: follow-service
-          image: moukthikavuyyuru/follow-service:latest
+          image: us-sanjose-1.ocir.io/ax0zk0xsm3t8/follow-service:$BUILDRUN_HASH
           ports:
             - containerPort: 8050
 

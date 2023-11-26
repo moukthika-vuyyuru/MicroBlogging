@@ -56,35 +56,32 @@ steps:
     command: |
       export BUILDRUN_HASH=$(echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7)
       echo "BUILDRUN_HASH: $BUILDRUN_HASH"
-  
+
 
   - type: Command
     name: Build Docker Images
     command: |
       cd ${OCI_PRIMARY_SOURCE_DIR}
-      echo "Logging into Docker Hub..."
-      echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USERNAME --password-stdin || exit 1
       for service in feed-service Kafka-consumer-service follow-service post-service; do
         # Convert service name to lowercase for Docker tag
         service_lower=$(echo $service | tr '[:upper:]' '[:lower:]')
         echo "Building Docker image for $service..."
-        docker build --pull --rm -t moukthikavuyyuru/$service_lower:latest ./$service
-        docker push moukthikavuyyuru/$service_lower:latest || exit 1
+        docker build --pull --rm -t $service_lower:$BUILDRUN_HASH ./$service
       done
 
 outputArtifacts:
-#  - name: feed-service
-#    type: DOCKER_IMAGE
-#    location: feed-service:latest
-#  - name: follow-service
-#    type: DOCKER_IMAGE
-#    location: follow-service:latest
-#  - name: post-service-image
-#    type: DOCKER_IMAGE
-#    location: post-service:latest
-#  - name: kafka-consumer-service-image
-#    type: DOCKER_IMAGE
-#    location: kafka-consumer-service:latest
+  - name: feed-service
+    type: DOCKER_IMAGE
+    location: feed-service:$BUILDRUN_HASH
+  - name: follow-service
+    type: DOCKER_IMAGE
+    location: follow-service:$BUILDRUN_HASH
+  - name: post-service-image
+    type: DOCKER_IMAGE
+    location: post-service:$BUILDRUN_HASH
+  - name: kafka-consumer-service-image
+    type: DOCKER_IMAGE
+    location: kafka-consumer-service:$BUILDRUN_HASH
   - name: feed-service-manifest
     type: BINARY
     location: ${OCI_PRIMARY_SOURCE_DIR}/k8s/feed/feed.yaml
