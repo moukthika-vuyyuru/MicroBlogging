@@ -1,22 +1,19 @@
----
 version: "0.1"
 component: build
 timeoutInSeconds: "1000"
 shell: bash
 env:
   vaultVariables:
-    DOCKERHUB_USERNAME: ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqa2suhlrletprxa5ngp32eescov3uii452wb2hngsiogca
-    DOCKERHUB_TOKEN: ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqavhu4eqic4njf6ze6yqut5qqjvvjuad6wcwkwatuwbcyq
+    OCI_REGISTRY_USERNAME: moukthikareddy.vuyyuru@sjsu.edu
+    OCI_REGISTRY_TOKEN: ocid1.credential.oc1..aaaaaaaad4rjea3gwy3yfwsduey4vm7i4isgic5yt5rvw5nuf5vb5t7asqeq
+
 steps:
   - type: Command
     name: Check and Install Java 11
     command: >
       echo "Checking current Java version..."
-
       CURRENT_JAVA_VERSION=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | cut -d'.' -f1-2)
-
       echo "Current Java version is $CURRENT_JAVA_VERSION"
-
       if [ "$CURRENT_JAVA_VERSION" != "11" ]; then
         echo "Installing Java 11..."
         yum install -y java-11-openjdk-devel || exit 1
@@ -25,8 +22,8 @@ steps:
       else
         echo "Java 11 is already installed."
       fi
-
       java -version || exit 1
+
   - type: Command
     name: Check and Install Maven
     command: |
@@ -38,6 +35,7 @@ steps:
         echo "Maven is already installed."
       fi
       mvn -version || exit 1
+
   - type: Command
     name: Build Application
     command: |
@@ -47,40 +45,42 @@ steps:
       mvn -version
       mvn clean install -DskipTests || exit 1
       echo "Build process complete."
-#  - type: Command
-#    name: Build and Push Docker Images to Docker Hub
-#    command: >
-#      echo "Logging into Docker Hub..."
-#
-#      echo $DOCKERHUB_TOKEN | docker login --username $DOCKERHUB_USERNAME --password-stdin || exit 1
-#
-#
-#      for service in feed-service Kafka-consumer-service follow-service post-service; do
-#        # Convert service name to lowercase for Docker tag
-#        service_lower=$(echo $service | tr '[:upper:]' '[:lower:]')
-#
-#        # Build and push the Docker image
-#        echo "Building Docker image for $service..."
-#        docker build -t moukthikavuyyuru/$service_lower:test ./$service || exit 1
-#        echo "Pushing Docker image for $service to Docker Hub..."
-#        docker push moukthikavuyyuru/$service_lower:test || exit 1
-#      done
+
   - type: Command
-    name: Define unique image tag
-    timeoutInSeconds: 40
+    name: Build and Push Docker Images
     command: |
-      export BUILDRUN_HASH=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
-      echo "BUILDRUN_HASH: " $BUILDRUN_HASH
-  - type: Command
-    timeoutInSeconds: 1200
-    name: Build container image
-    command: |
-      cd ${OCI_PRIMARY_SOURCE_DIR}
-      docker build --pull --rm -t feed_service ./feed-service || exit 1
+      echo "Logging into OCI Container Registry..."
+      echo $OCI_REGISTRY_TOKEN | docker login us-sanjose-1.ocir.io --username $OCI_REGISTRY_USERNAME --password-stdin || exit 1
+      UNIQUE_TAG=$(echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7)
+      for service in feed follow post consumer; do
+        echo "Building Docker image for $service..."
+        docker build -t us-sanjose-1.ocir.io/moukthikareddy/docker-images/$service:$UNIQUE_TAG ./$service || exit 1
+        echo "Pushing Docker image for $service to OCI Container Registry..."
+        docker push us-sanjose-1.ocir.io/moukthikareddy/docker-images/$service:$UNIQUE_TAG || exit 1
+      done
+
 outputArtifacts:
-  - name: feed-service
+  - name: feed-service-image
     type: DOCKER_IMAGE
-    location: feed_service:latest
-  - name: feed
+    location: us-sanjose-1.ocir.io/moukthikareddy/docker-images/feed:$UNIQUE_TAG
+  - name: follow-service-image
+    type: DOCKER_IMAGE
+    location: us-sanjose-1.ocir.io/moukthikareddy/docker-images/follow:$UNIQUE_TAG
+  - name: post-service-image
+    type: DOCKER_IMAGE
+    location: us-sanjose-1.ocir.io/moukthikareddy/docker-images/post:$UNIQUE_TAG
+  - name: kafka-consumer-service-image
+    type: DOCKER_IMAGE
+    location: us-sanjose-1.ocir.io/moukthikareddy/docker-images/consumer:$UNIQUE_TAG
+  - name: feed-service-manifest
     type: BINARY
     location: ${OCI_PRIMARY_SOURCE_DIR}/k8s/feed/feed.yaml
+  - name: follow-service-manifest
+    type: BINARY
+    location: ${OCI_PRIMARY_SOURCE_DIR}/k8s/follow/follow.yaml
+  - name: post-service-manifest
+    type: BINARY
+    location: ${OCI_PRIMARY_SOURCE_DIR}/k8s/post/post.yaml
+  - name: kafka-consumer-service-manifest
+    type: BINARY
+    location: ${OCI_PRIMARY_SOURCE_DIR}/k8s/consumer/kafka-consumer.yaml
