@@ -81,6 +81,6 @@ outputArtifacts:
   - name: feed-service
     type: DOCKER_IMAGE
     location: feed_service:latest
-  - name: feed_deploy_manifest
+  - name: feed
     type: BINARY
-    location: ${OCI_PRIMARY_SOURCE_DIR}/feed.yaml
+    location: ${OCI_PRIMARY_SOURCE_DIR}
