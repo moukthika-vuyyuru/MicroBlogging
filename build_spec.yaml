@@ -3,6 +3,11 @@ component: "build"
 timeoutInSeconds: "1000"
 shell: "bash"
 
+env:
+  vaultVariables:
+    DOCKERHUB_USERNAME: "ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqa2suhlrletprxa5ngp32eescov3uii452wb2hngsiogca"
+    DOCKERHUB_TOKEN: "ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqavhu4eqic4njf6ze6yqut5qqjvvjuad6wcwkwatuwbcyq"
+
 steps:
   - type: "Command"
     name: "Check and Install Java 11"
