@@ -37,7 +37,7 @@ steps:
     name: "Build Application"
     command: |
       echo "Starting build process with Maven..."
-      mvn clean install -DskipTests
+      mvn -B clean install
       echo "Build process complete."
 
   - type: "Command"
