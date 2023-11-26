@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: follow-service
-          image: us-sanjose-1.ocir.io/ax0zk0xsm3t8/follow-service:$BUILDRUN_HASH
+          image: us-sanjose-1.ocir.io/ax0zk0xsm3t8/follow-service:$TIMESTAMP
           ports:
             - containerPort: 8050
 
