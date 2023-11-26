@@ -60,3 +60,4 @@ steps:
         docker build -t moukthikavuyyuru/$service_lower:latest ./$service
         docker push moukthikavuyyuru/$service_lower:latest
       done
+      
