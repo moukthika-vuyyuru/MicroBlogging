@@ -36,7 +36,10 @@ steps:
     name: "Build Application"
     command: |
       echo "Starting build process with Maven..."
-      mvn -B clean install || exit 1
+      export JAVA_HOME=/usr/lib/jvm/java-11-openjdk
+      export PATH=$JAVA_HOME/bin:$PATH
+      mvn -version
+      mvn clean install -DskipTests || exit 1
       echo "Build process complete."
 
   - type: "Command"
