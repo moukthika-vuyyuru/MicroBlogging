@@ -4,7 +4,7 @@ timeoutInSeconds: "1000"
 shell: bash
 env:
   vaultVariables:
-    OCI_REGISTRY_TOKEN: ocid1.credential.oc1..aaaaaaaad4rjea3gwy3yfwsduey4vm7i4isgic5yt5rvw5nuf5vb5t7asqeq
+    OCI_REGISTRY_TOKEN: ocid1.vaultsecret.oc1.us-sanjose-1.amaaaaaaeftofsqasqm2uu6dds4zl2aac6su7qr2kxuodtaklttidkzs4c7q
 
 steps:
   - type: Command
