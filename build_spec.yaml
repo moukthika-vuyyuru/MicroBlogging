@@ -52,8 +52,9 @@ steps:
     name: Define unique image tag
     timeoutInseconds: 40
     command: |
-        export BUILDRUN_HASH=`echo S{OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
-        echo "BUILDRUN_HASH: " $BUILDRUN_HASH
+      export BUILDRUN_HASH=$(echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7)
+      echo "BUILDRUN_HASH: $BUILDRUN_HASH"
+  
 
   - type: Command
     name: Build Docker Images
