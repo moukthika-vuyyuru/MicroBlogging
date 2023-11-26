@@ -11,8 +11,11 @@ steps:
     name: Check and Install Java 11
     command: >
       echo "Checking current Java version..."
+
       CURRENT_JAVA_VERSION=$(java -version 2>&1 | awk -F '"' '/version/ {print $2}' | cut -d'.' -f1-2)
+
       echo "Current Java version is $CURRENT_JAVA_VERSION"
+
       if [ "$CURRENT_JAVA_VERSION" != "11" ]; then
         echo "Installing Java 11..."
         yum install -y java-11-openjdk-devel || exit 1
@@ -21,8 +24,8 @@ steps:
       else
         echo "Java 11 is already installed."
       fi
-      java -version || exit 1
 
+      java -version || exit 1
   - type: Command
     name: Check and Install Maven
     command: |
@@ -34,7 +37,6 @@ steps:
         echo "Maven is already installed."
       fi
       mvn -version || exit 1
-
   - type: Command
     name: Build Application
     command: |
