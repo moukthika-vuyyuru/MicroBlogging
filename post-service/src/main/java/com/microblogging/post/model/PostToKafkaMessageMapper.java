@@ -39,5 +39,6 @@ public class PostToKafkaMessageMapper {
 		 message.setTimestampUpdated(post.getLastModifiedDate());
 		 message.setUserId(post.getUserId());
 		 message.setAuthorId(post.getAuthorId());
+		 message.setLikes(post.getLikes());
 	}
 }
