@@ -19,6 +19,7 @@ public interface UserRepository extends MongoRepository<User, String> {
             "        { 'firstName': { $regex: ?0, $options: 'i' } }," +
             "        { 'lastName': { $regex: ?0, $options: 'i' } }," +
             "        { 'location': { $regex: ?0, $options: 'i' } }," +
+            "        { 'tagline': { $regex: ?0, $options: 'i' } }" +
             "    ]" +
             "}")
     List<User> searchByUsername(String username);
