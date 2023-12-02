@@ -24,6 +24,7 @@ public class PostToKafkaMessageMapper {
 								 return mapper.writeValueAsString(message);
 			case "tweet_deleted":
 								 mapPostToKafkaMessage(post,message,eventType);
+								 message.setTimestamp(post.getLastModifiedDate());
 								 return mapper.writeValueAsString(message);
 							
 		}
