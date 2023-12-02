@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -22,18 +24,24 @@ public class DummyController {
     public String triggerEventHandling() throws JsonProcessingException {
         log.info("DummyController: triggerEventHandling() called.");
         // Create a mock TweetMessage to simulate an event
+        List<String> likes = new ArrayList<>();
+        likes.add("auth0|656a6930a19599c9209804bd");
+        likes.add("auth0|656a6f382b2b0f327a499987");
+        likes.add("auth0|656a695b34408e731c37b75e");
+
 
         TweetMessage mockTweetMessage = new TweetMessage(
                 "tweet_created",
                 "2023-10-17T14:30:00Z",
-                "Alice",
-                "tweet567",
-                "BB",
-                null
+                "auth0|656a699c2b2b0f327a4993a2",
+                "656a69ee78a7281da8a40381",
+                "Hi, How's it going!! :)",
+                "2023-12-01T23:21:05Z",
+                likes
         );
 
         FollowEvent followEvent = new FollowEvent();
-        followEvent.setEventType("user_unfollowed");
+        followEvent.setEventType("tweet_updated");
         followEvent.setTimestamp(LocalDateTime.now());
         followEvent.setUserId("Charlie");
         followEvent.setFollowerId("Alice");
@@ -41,9 +49,9 @@ public class DummyController {
         // Call the event handling service with the mock message
        // eventHandlingService.handleTweetCreated(mockTweetMessage);
         //eventHandlingService.handleTweetDeleted(mockTweetMessage);
-        //eventHandlingService.handleTweetUpdated(mockTweetMessage);
+        eventHandlingService.handleTweetUpdated(mockTweetMessage);
         //eventHandlingService.handleUserFollowed(followEvent);
-        eventHandlingService.handleUserUnfollowed(followEvent);
+        //eventHandlingService.handleUserUnfollowed(followEvent);
 
         return "Event handling triggered.";
     }

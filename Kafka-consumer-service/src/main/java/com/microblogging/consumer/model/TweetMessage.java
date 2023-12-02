@@ -3,6 +3,8 @@ package com.microblogging.consumer.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.util.List;
+
 public class TweetMessage {
     private String eventType;
     private String timestamp; // Created timestamp
@@ -10,6 +12,8 @@ public class TweetMessage {
     private String userId;
     private String tweetId;
     private String content;
+
+    private List<String> likes;
 
     // No-arg constructor
     public TweetMessage() {
@@ -23,13 +27,15 @@ public class TweetMessage {
             @JsonProperty("userId") String userId,
             @JsonProperty("tweetId") String tweetId,
             @JsonProperty("content") String content,
-            @JsonProperty("timestampUpdated") String timestampUpdated) {
+            @JsonProperty("timestampUpdated") String timestampUpdated,
+            @JsonProperty("likes") List<String> likes) {
         this.eventType = eventType;
         this.timestamp = timestamp;
         this.userId = userId;
         this.tweetId = tweetId;
         this.content = content;
         this.timestampUpdated = timestampUpdated;
+        this.likes = likes;
     }
 
     public String getEventType() {
@@ -78,6 +84,14 @@ public class TweetMessage {
 
     public void setContent(String content) {
         this.content = content;
+    }
+
+    public List<String> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(List<String> likes) {
+        this.likes = likes;
     }
 
     @Override

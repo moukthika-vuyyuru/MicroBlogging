@@ -44,7 +44,8 @@ public class EventHandlingServiceImpl implements EventHandlingService {
                 UserTimeline userTimeline = new UserTimeline(
                         key,
                         tweetMessage.getUserId(),
-                        tweetMessage.getContent()
+                        tweetMessage.getContent(),
+                        new ArrayList<>()
                 );
 
                 userTimelineRepository.save(userTimeline);
@@ -77,7 +78,8 @@ public class EventHandlingServiceImpl implements EventHandlingService {
                 UserTimeline newTimelineEntry = new UserTimeline(
                         newKey,
                         tweetMessage.getUserId(),
-                        tweetMessage.getContent()
+                        tweetMessage.getContent(),
+                        tweetMessage.getLikes()
                 );
                 userTimelineRepository.save(newTimelineEntry);
 
@@ -181,7 +183,8 @@ public class EventHandlingServiceImpl implements EventHandlingService {
             UserTimeline userTimeline = new UserTimeline(
                     key,
                     post.getAuthorId(),
-                    post.getContent()
+                    post.getContent(),
+                    post.getLikes()
             );
 
             userTimelineRepository.save(userTimeline);

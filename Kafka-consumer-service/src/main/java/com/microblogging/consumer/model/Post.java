@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -16,5 +17,6 @@ public class Post {
     private LocalDateTime createdDate;
     private LocalDateTime lastModifiedDate;
     private String content;
+    private List<String> likes;
 
 }

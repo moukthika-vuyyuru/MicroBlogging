@@ -9,6 +9,7 @@ import org.springframework.data.cassandra.core.mapping.PrimaryKey;
 import org.springframework.data.cassandra.core.mapping.Table;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @Table("user_timeline")
@@ -22,6 +23,7 @@ public class UserTimeline {
 
     private String author_id;
     private String content;
+    private List<String> likes;
 
     @JsonProperty("userId")
     public String getUserId() {
@@ -37,5 +39,10 @@ public class UserTimeline {
     public String getTweetId() {
         return key.getTweetId();
     }
+
+    @JsonProperty("likes")
+    public List<String> getLikes() {return likes;}
+
+    public void setLikes(List<String> likes) {this.likes = likes;}
 
 }
