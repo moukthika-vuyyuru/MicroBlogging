@@ -1,6 +1,8 @@
 package com.microblogging.post.model;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 public class KafkaMessage {
 
@@ -17,6 +19,8 @@ public class KafkaMessage {
 	private LocalDateTime timestamp;
 
 	private LocalDateTime timestampUpdated;
+	
+	private Set<String> Likes = new HashSet<>();
 
 
 	public String getEventType() {
@@ -73,6 +77,14 @@ public class KafkaMessage {
 
 	public void setTimestampUpdated(LocalDateTime timestampUpdated) {
 		this.timestampUpdated = timestampUpdated;
+	}
+	
+	public Set<String> getLikes() {
+		return Likes;
+	}
+
+	public void setLikes(Set<String> likes) {
+		Likes = likes;
 	}
 
 }
