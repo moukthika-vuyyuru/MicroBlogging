@@ -44,11 +44,11 @@ public class PostService {
 		return repository.findByUserId(userId);
 	}
 	
-	public Optional<Post> updatePostByPostId(String userId, String postId, Post post) {
+	public Optional<Post> updatePostByPostId(String userId, String postId, Post post, boolean isAdmin) {
 	    Optional<Post> postToBeUpdated = repository.findById(postId);
 	   
 	    if (postToBeUpdated.isPresent()) {
-	    	if(!userId.equals(postToBeUpdated.get().getAuthorId()))
+	    	if(!isAdmin && !userId.equals(postToBeUpdated.get().getAuthorId()))
 	    	{
 	    		System.out.println("A user cannot update other user's posts");
 		        return Optional.empty(); 
@@ -67,13 +67,13 @@ public class PostService {
 	}
 
 	
-	public boolean deletePostByPostId(String userId, String postId)
+	public boolean deletePostByPostId(String userId, String postId, boolean isAdmin)
 	{
 		Optional<Post> postToBeDeleted = repository.findById(postId);
 		
 		if(postToBeDeleted.isPresent())
 		{
-			if(!userId.equals(postToBeDeleted.map(p -> p.getUserId()).orElse(null)))
+			if(!isAdmin && !userId.equals(postToBeDeleted.map(p -> p.getUserId()).orElse(null)))
 				System.out.println("A user cannot delete other user's posts");
 			else
 			{

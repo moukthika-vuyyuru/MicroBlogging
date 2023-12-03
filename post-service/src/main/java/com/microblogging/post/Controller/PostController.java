@@ -40,9 +40,9 @@ public class PostController {
 	}
 	
 	@PutMapping("/updatePost/{userId}/{postId}")
-	public Optional<Post> updatePostById(@PathVariable String userId, @PathVariable String postId, @RequestBody Post post)
+	public Optional<Post> updatePostById(@PathVariable String userId, @PathVariable String postId, @RequestParam(required = false) boolean isAdmin, @RequestBody Post post)
 	{
-		var updatedPost = postService.updatePostByPostId(userId, postId, post);
+		var updatedPost = postService.updatePostByPostId(userId, postId, post, isAdmin);
 		if(updatedPost.isPresent())
 		{
 			var postUpdated = updatedPost.get();
@@ -53,10 +53,10 @@ public class PostController {
 	}
 	
 	@DeleteMapping("/deletePost/{userId}/{postId}")
-	public void deletePostByPostId(@PathVariable String userId, @PathVariable String postId)
+	public void deletePostByPostId(@PathVariable String userId, @PathVariable String postId, @RequestParam(required = false) boolean isAdmin)
 	{
 		var post = postService.getPostByPostId(postId);
-		var isPostDeleted = postService.deletePostByPostId(userId, postId);
+		var isPostDeleted = postService.deletePostByPostId(userId, postId, isAdmin);
 		if(post.isPresent() && isPostDeleted)
 		{
 			var postDeleted = post.get();
