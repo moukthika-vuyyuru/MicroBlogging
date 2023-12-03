@@ -57,27 +57,27 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void followUser(String currentUsername, String userToFollowUsername) {
-        User currentUser = userRepository.findByUserId(currentUsername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + currentUsername));
-        User userToFollow = userRepository.findByUserId(userToFollowUsername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + userToFollowUsername));
+    public void followUser(String currentUserId, String userToFollowUserId) {
+        User currentUser = userRepository.findByUserId(currentUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId: " + currentUserId));
+        User userToFollow = userRepository.findByUserId(userToFollowUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId: " + userToFollowUserId));
 
-        currentUser.getFollowing().add(userToFollow.getId());
-        userToFollow.getFollowers().add(currentUser.getId());
+        currentUser.getFollowing().add(userToFollow.getUserId());
+        userToFollow.getFollowers().add(currentUser.getUserId());
 
         userRepository.save(currentUser);
         userRepository.save(userToFollow);
     }
 
-    public void unfollowUser(String currentUsername, String userToUnfollowUsername) {
-        User currentUser = userRepository.findByUserId(currentUsername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + currentUsername));
-        User userToUnfollow = userRepository.findByUserId(userToUnfollowUsername)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + userToUnfollowUsername));
+    public void unfollowUser(String currentUserId, String userToUnfollowUserId) {
+        User currentUser = userRepository.findByUserId(currentUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId: " + currentUserId));
+        User userToUnfollow = userRepository.findByUserId(userToUnfollowUserId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId: " + userToUnfollowUserId));
 
-        currentUser.getFollowing().remove(userToUnfollow.getId());
-        userToUnfollow.getFollowers().remove(currentUser.getId());
+        currentUser.getFollowing().remove(userToUnfollow.getUserId());
+        userToUnfollow.getFollowers().remove(currentUser.getUserId());
 
         userRepository.save(currentUser);
         userRepository.save(userToUnfollow);
