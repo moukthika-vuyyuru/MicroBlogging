@@ -102,7 +102,7 @@ public class PostService {
 			criteriaList.add(Criteria.where("userId").is(userId));
 		}
 		if (content != null && !content.isEmpty()) {
-			criteriaList.add(Criteria.where("content").regex("^" + Pattern.quote(content), "i"));
+			criteriaList.add(Criteria.where("content").regex(Pattern.quote(content), "i"));
 		}
 
 		if (criteriaList.isEmpty()) {
