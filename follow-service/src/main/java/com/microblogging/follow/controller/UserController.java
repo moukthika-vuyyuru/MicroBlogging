@@ -115,7 +115,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
     @GetMapping("/search")
-    public ResponseEntity<List<User>> searchUsers(@RequestParam String keyword) {
+    public ResponseEntity<List<User>> searchUsers(@RequestParam(required = false)  String keyword) {
         log.info("Received request to search for users with keyword: {}", keyword);
         List<User> users = userService.searchUsers(keyword);
         if(users.isEmpty()) {
