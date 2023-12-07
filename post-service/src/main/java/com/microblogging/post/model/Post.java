@@ -4,9 +4,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "Posts")
@@ -19,10 +17,16 @@ public class Post {
 
 	private String authorId;
 
-	@CreatedDate
+	public void setCreatedDate(LocalDateTime createdDate) {
+		this.createdDate = createdDate;
+	}
+
 	private LocalDateTime createdDate;
 
-	@LastModifiedDate
+	public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+		this.lastModifiedDate = lastModifiedDate;
+	}
+
 	private LocalDateTime lastModifiedDate;
 
 	private String content;
