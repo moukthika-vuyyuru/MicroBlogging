@@ -84,7 +84,10 @@ public class UserService {
     }
 
     public List<User> searchUsers(String keyword) {
+        if (keyword!=null)
         return userRepository.searchByUsername(keyword);
+        else
+            return getAllUsers();
     }
 
     public List<User> getFollowers(String userId) {
