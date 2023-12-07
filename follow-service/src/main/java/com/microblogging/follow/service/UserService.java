@@ -87,25 +87,35 @@ public class UserService {
         return userRepository.searchByUsername(keyword);
     }
 
-    public List<User> getFollowers(String username) {
-        User user = userRepository.findByUserId(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+    public List<User> getFollowers(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + userId));
         List<String> followerIds = new ArrayList<>(user.getFollowers());
         // findAllById returns an Iterable, we need to convert it to a List
         List<User> followers = new ArrayList<>();
-        userRepository.findAllById(followerIds).forEach(followers::add);
+        for (String followingId : followerIds) {
+            User followingUser = userRepository.findByUserId(followingId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + followingId));
+            followers.add(followingUser);
+        }
+
 
         return followers;
     }
 
-    public List<User> getFollowing(String username) {
-        User user = userRepository.findByUserId(username)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with username: " + username));
+    public List<User> getFollowing(String userId) {
+        User user = userRepository.findByUserId(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with userId: " + userId));
         // Convert the Set of following IDs to a List to match findAllById signature
         List<String> followingIds = new ArrayList<>(user.getFollowing());
         // findAllById returns an Iterable, we need to convert it to a List
         List<User> following = new ArrayList<>();
-        userRepository.findAllById(followingIds).forEach(following::add);
+        for (String followingId : followingIds) {
+            User followingUser = userRepository.findByUserId(followingId)
+                    .orElseThrow(() -> new ResourceNotFoundException("User not found with userId: " + followingId));
+            following.add(followingUser);
+        }
+
 
         return following;
     }
