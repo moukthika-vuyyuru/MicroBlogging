@@ -88,11 +88,15 @@ public class PostController {
 	@PostMapping("/posts/{postId}/like")
 	public ResponseEntity<Void> likePost(@PathVariable String postId, @RequestParam String userId) {
 		postService.LikePost(postId, userId);
-        return ResponseEntity.ok().build();
+		var post = postService.getPostByPostId(postId);
+		kafkaProducerService.sendMessage(post.get(),"tweet_updated");
+		return ResponseEntity.ok().build();
     }
 	@PostMapping("/posts/{postId}/unlike")
 	public ResponseEntity<Void> unLikePost(@PathVariable String postId, @RequestParam String userId) {
 		postService.unLikePost(postId, userId);
-     return ResponseEntity.ok().build();
+		var post = postService.getPostByPostId(postId);
+		kafkaProducerService.sendMessage(post.get(),"tweet_updated");
+		return ResponseEntity.ok().build();
 	}
 }
