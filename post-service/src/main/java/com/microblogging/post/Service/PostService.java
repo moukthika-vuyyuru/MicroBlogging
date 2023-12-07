@@ -26,6 +26,8 @@ public class PostService {
 
 	public Post addPost(Post post)
 	{
+		post.setCreatedDate(LocalDateTime.now());
+		post.setLastModifiedDate(LocalDateTime.now());
 		return repository.save(post);
 	}
 	
@@ -56,9 +58,9 @@ public class PostService {
 	        Post updatedPost = postToBeUpdated.map(p -> {
 	            p.setContent(post.getContent());
 	            return p;
-	        }).orElse(null); 
-
-	        repository.save(updatedPost);
+	        }).orElse(null);
+			post.setLastModifiedDate(LocalDateTime.now());
+			repository.save(updatedPost);
 	        return Optional.of(updatedPost); 
 	    } else {
 	        System.out.println("Was not able to find the post to update with ID value " + postId);
