@@ -66,8 +66,11 @@ public class EventHandlingServiceImpl implements EventHandlingService {
                 // Delete the old timeline entry from the database
                 LocalDateTime tweetTimestamp = objectMapper.convertValue(tweetMessage.getTimestamp(), LocalDateTime.class);
                 UserTimelineKey oldKey = new UserTimelineKey(followerId, tweetTimestamp, tweetMessage.getTweetId());
+                log.info("Deleting tweet for user to update it {}", followerId);
                 userTimelineRepository.deleteById(oldKey);
+                log.info("Deleted tweet for user to update it {}", followerId);
 
+                log.info("Updating tweet for user {}", followerId);
                 // Insert the new timeline entry with the updated timestamp
                 LocalDateTime updatedTimestamp = objectMapper.convertValue(tweetMessage.getTimestampUpdated(), LocalDateTime.class);
                 UserTimelineKey newKey = new UserTimelineKey(
