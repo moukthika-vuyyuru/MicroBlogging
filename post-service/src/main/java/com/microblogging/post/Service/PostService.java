@@ -59,7 +59,7 @@ public class PostService {
 	            p.setContent(post.getContent());
 	            return p;
 	        }).orElse(null);
-			post.setLastModifiedDate(LocalDateTime.now());
+			updatedPost.setLastModifiedDate(LocalDateTime.now());
 			repository.save(updatedPost);
 	        return Optional.of(updatedPost); 
 	    } else {
